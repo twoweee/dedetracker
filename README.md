@@ -1,8 +1,11 @@
 # To run:
 Just compile and run main.c.
+
 # Situation as of now
 Work in progress, building out files one by one.
+
 Everything is work in progress, even the structure and readme.
+
 To do soon:
 - structure better,
 - write better commetns in PseudoHeapManager and a better readme,
@@ -21,9 +24,12 @@ To do soon:
 # Design
 ## Design on larger scale
 Some design will go here.
+
 ## On each file 
 ### TrackData
 Time points = "time", the entire row of data in that time point (including time) = "tick".
+
 Time is stored across 2 bytes, yet to decide on format, it'll be a fixed-point decimal likely or integer of 100 microsecond chunks or something. 
+
 ### PseudoHeapManager
 This will manage a simulated heap inside a stack mem space. We need this in case we want the MIDI message to be longer than 4 bytes. 
