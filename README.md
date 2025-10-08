@@ -1,4 +1,4 @@
-#To run:
+# To run:
 Just compile and run main.c.
 #Situation as of now
 Work in progress, building out files one by one.
