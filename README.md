@@ -4,11 +4,11 @@ Just compile and run main.c.
 Work in progress, building out files one by one.
 Everything is work in progress, even the structure and readme.
 To do soon:
--structure better,
--write better commetns in PseudoHeapManager and a better readme,
--figure out (and document) remaining design,
--create a test directory and test scripts, replace test junk in main with something more sensible,
--TrackData.c is tested, but PseudoHeapManager just kinda, and certainly not together for those hypothetical long MIDI messages.
+- structure better,
+- write better commetns in PseudoHeapManager and a better readme,
+- figure out (and document) remaining design,
+- create a test directory and test scripts, replace test junk in main with something more sensible,
+- TrackData.c is tested, but PseudoHeapManager just kinda, and certainly not together for those hypothetical long MIDI messages.
 
 # Parts list
 | File | Description | Status |
