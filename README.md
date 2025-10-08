@@ -1,6 +1,6 @@
 # To run:
 Just compile and run main.c.
-#Situation as of now
+# Situation as of now
 Work in progress, building out files one by one.
 Everything is work in progress, even the structure and readme.
 To do soon:
@@ -10,7 +10,7 @@ To do soon:
 -create a test directory and test scripts, replace test junk in main with something more sensible,
 -TrackData.c is tested, but PseudoHeapManager just kinda, and certainly not together for those hypothetical long MIDI messages.
 
-#Parts list
+# Parts list
 | File | Description | Status |
 | ----------- | ----------- | ----------- |
 | [TrackData.c](#trackdata) | track note and tick data structure with tick array, provides adding, removing, changing | Done for now |
@@ -18,12 +18,12 @@ To do soon:
 | the rest | work in progress | work in progress |
 
 
-#Design
-##Design on larger scale
+# Design
+## Design on larger scale
 Some design will go here.
-##On each file 
-###TrackData
+## On each file 
+### TrackData
 Time points = "time", the entire row of data in that time point (including time) = "tick".
 Time is stored across 2 bytes, yet to decide on format, it'll be a fixed-point decimal likely or integer of 100 microsecond chunks or something. 
-###PseudoHeapManager
+### PseudoHeapManager
 This will manage a simulated heap inside a stack mem space. We need this in case we want the MIDI message to be longer than 4 bytes. 
