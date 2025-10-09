@@ -76,6 +76,7 @@ inline int justAllocate(struct PseudoHeapInstance* heapInstance, int* confirmedF
     return 0;
 };
 
+// check if given space is free
 inline int isMemoryTaken(struct PseudoHeapInstance* heapInstance, int* confirmedFreeBytes, int* currentOffset, int* neededLengthInBytes, 
     void** newAllocatedSpace) {
     if (((uint8_t*)(heapInstance->memSpace))[*currentOffset] == '\0'){

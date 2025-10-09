@@ -5,6 +5,7 @@
 # Code samples previously used for testing 
 example*.c
 
+
 # Editors
 .vscode/
 .idea/
