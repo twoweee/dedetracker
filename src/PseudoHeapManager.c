@@ -10,6 +10,7 @@ struct PseudoHeapInstance {
     int lastFailedAllocateSize;
 };
 
+// print single mem line 
 int inline printMemLine(int lineWidth, unsigned char *startAddr, int row, uint16_t *pbytes, int lastRowLen){
     printf("%04X %04X", row*lineWidth, pbytes[0]+row*lineWidth);
     for (int col = 0; col < lastRowLen; col++){
@@ -18,6 +19,7 @@ int inline printMemLine(int lineWidth, unsigned char *startAddr, int row, uint16
     return 0;
 }
 
+// print memory bytes for debugging
 int printMemSpace(void* memSpace, int length, int lineWidth){
     unsigned char *startAddr = (unsigned char *)memSpace;
     uint16_t *pbytes = (uint16_t *)&startAddr;
@@ -45,6 +47,7 @@ int printMemSpace(void* memSpace, int length, int lineWidth){
     return 0;
 }
 
+// print PseudoHeap instance
 int printPseudoHeapInstance(struct PseudoHeapInstance* heapInstance, int lineWidth) {
     printf("ADDR: %p, LEN: %d, last_used_addr: %d, full: %d\n", 
         heapInstance->memSpace, heapInstance->length, heapInstance->lastUsedByte, heapInstance->lastFailedAllocateSize);
@@ -63,16 +66,22 @@ struct PseudoHeapInstance initializePseudoHeap(void* startingAddr, int lengthInB
     return newHeap;
 }
 
+// just allocate the memory
+inline int justAllocate(struct PseudoHeapInstance* heapInstance, int* confirmedFreeBytes, int* currentOffset, int* neededLengthInBytes, 
+    void** newAllocatedSpace){
+    heapInstance->lastUsedByte = *currentOffset;
+    //memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), '\x01', *neededLengthInBytes);
+    memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), *currentOffset, *neededLengthInBytes);
+    *newAllocatedSpace = (void*)((uint8_t*)(heapInstance->memSpace))[*currentOffset];
+    return 0;
+};
+
 inline int isMemoryTaken(struct PseudoHeapInstance* heapInstance, int* confirmedFreeBytes, int* currentOffset, int* neededLengthInBytes, 
     void** newAllocatedSpace) {
     if (((uint8_t*)(heapInstance->memSpace))[*currentOffset] == '\0'){
         (*confirmedFreeBytes)++;
         if (*confirmedFreeBytes >= *neededLengthInBytes) {
-            heapInstance->lastUsedByte = *currentOffset;
-            //memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), '\x01', *neededLengthInBytes);
-            memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), *currentOffset, *neededLengthInBytes);
-            *newAllocatedSpace = (void*)((uint8_t*)(heapInstance->memSpace))[*currentOffset];
-            return 0;
+            return justAllocate(heapInstance, confirmedFreeBytes, currentOffset, neededLengthInBytes, newAllocatedSpace);
         }
     } else {
         confirmedFreeBytes = 0;
@@ -80,6 +89,7 @@ inline int isMemoryTaken(struct PseudoHeapInstance* heapInstance, int* confirmed
     return 1;
 }
 
+// reserve space in the heap, newAllocatedSpace holds the stored to address
 int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, int neededLengthInBytes, void** newAllocatedSpace) {
     int confirmedFreeBytes = 0;
     if (heapInstance->lastFailedAllocateSize<=neededLengthInBytes || neededLengthInBytes>heapInstance->length) return 1;
@@ -101,6 +111,7 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, int neededLengthI
     return 1;
 }
 
+// free some space
 int freePseudoHeap(struct PseudoHeapInstance* heapInstance, int startOffset, int lengthInBytes) {
     heapInstance->lastFailedAllocateSize = INT16_MAX;
     memset(((uint8_t*)heapInstance->memSpace) + startOffset, '\0', lengthInBytes);
