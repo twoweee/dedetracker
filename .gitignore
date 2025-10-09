@@ -1,4 +1,16 @@
+# Bicrosoft Bindows
 *.exe
 *.pdb
-.vscode/
+
 example*.c
+
+# Editors
+.vscode/
+.idea/
+# Vim
+*~.swp
+
+dist/*
+build/*
+# So that git saves the directory structure, empty dirs are not kept
+!*.placeholder
