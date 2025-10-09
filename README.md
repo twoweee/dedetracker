@@ -9,7 +9,7 @@ Everything is work in progress, even the structure and readme.
 Currently working in the **main** branch solely because there is no *working* version, so there isn't really much to break as I'm building things out. Once there is an actual version I will add at least a dev branch. 
 
 To do soon:
-- structure better,
+- ~~structure better,~~
 - write better commetns in PseudoHeapManager and a better readme,
 - figure out (and document) remaining design,
 - create a test directory and test scripts, replace test junk in main with something more sensible,
