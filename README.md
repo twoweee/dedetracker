@@ -6,6 +6,8 @@ Work in progress, building out files one by one.
 
 Everything is work in progress, even the structure and readme.
 
+Currently working in the **main** branch solely because there is no *working* version, so there isn't really much to break as I'm building things out. Once there is an actual version I will add at least a dev branch. 
+
 To do soon:
 - structure better,
 - write better commetns in PseudoHeapManager and a better readme,
