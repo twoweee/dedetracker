@@ -11,9 +11,10 @@ Currently working in the **main** branch solely because there is no *working* ve
 To do soon:
 - ~~structure better,~~
 - ~~write better commetns in PseudoHeapManager and a better readme,~~
-- figure out (and document) remaining design,
 - create a test directory and test scripts,
-- TrackData.c is tested, but ~~PseudoHeapManager just kinda,~~ PseudoHeap needs reworking ~~and certainly not together for those hypothetical long MIDI messages~~.
+- PseudoHeap needs reworking,
+- figure out (and document) remaining design,
+- TrackData.c is tested, ~~but PseudoHeapManager just kinda,and certainly not together for those hypothetical long MIDI messages~~.
 
 # Parts list
 | File | Description | Status |
