@@ -1,3 +1,3 @@
-[submodule "test/unity"]
-	path = test/unity
+[submodule "lib/test/unity"]
+	path = lib/test/unity
 	url = https://github.com/ThrowTheSwitch/Unity.git
