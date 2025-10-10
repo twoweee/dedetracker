@@ -1,5 +1,4 @@
-#include "test.h"
-#include "TrackData.c"
+#include "../src/TrackData.c"
 
 int testTrackData() {
     return 0;
