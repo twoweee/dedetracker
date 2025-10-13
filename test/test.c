@@ -1,4 +1,4 @@
-#include "../lib/test/unity/src/unity.c"
+#include "../third-party/test/unity/src/unity.c"
 #include "../src/TrackData.c"
 
 int testTrackData() {
