@@ -14,7 +14,7 @@
 
 // #define DATA_LENGTH (sizeof(POINTER_T) + sizeof(MEM_LENGTH_T)) // length of data section
 // #define TICK_LENGTH (sizeof(TICK_T) + DATA_LENGTH) 
-#define MAX_TICKS_PER_TRACK 20 // maximum ticks count per track
+// #define MAX_TICKS_PER_TRACK 20 // maximum ticks count per track
 // #define TRACK_TICKS_LENGTH (TICK_LENGTH * MAX_TICKS_PER_TRACK)
 
 struct TickData_Pointer {
@@ -57,6 +57,7 @@ struct TrackData createTrack(NAME_T newName, TRACK_LENGTH_T newLength){
     newTrack.length = newLength;
     newTrack.ticksUsed = 0;
     memset(((uint8_t*)newTrack.ticks), '\0', TRACK_TICKS_LENGTH);
+    newTrack.heapInstance = NULL;
     return newTrack;
 };
 
@@ -144,11 +145,12 @@ uint8_t remTickFromTrack(struct TrackData* trackDeleteFrom, TICK_T removeTime){
 
 // change tick value but not time
 uint8_t changeTickInTrack(struct TrackData* trackToEdit, TICK_T changeTime,
-    union TickData* bytes){ 
+    union TickData* bytes, uint8_t flag) { 
     if (trackToEdit->ticksUsed) {
         COUNT_SLOTS_T desiredPosition = 0;
         if (findTickExactPos(trackToEdit, changeTime, &desiredPosition)) return 1;
         memcpy(trackToEdit->ticks[desiredPosition].data.bytes, bytes, DATA_LENGTH);
+        trackToEdit->ticks[desiredPosition].flag = flag;
     } else {
         return 1; // track is empty
     }

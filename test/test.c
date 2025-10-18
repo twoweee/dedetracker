@@ -1,14 +1,15 @@
+#include "../test/tTrackData.c"
 #include "../third-party/test/unity/src/unity.c"
-#include "../src/TrackData.c"
 
-int testTrackData() {
-    return 0;
-}
 
-int testPseudoHeapManager() {
-    return 0;
-}
+void setUp(void) {}
+
+void tearDown(void) {}
 
 int main() {
-    return testTrackData() + testPseudoHeapManager();
+    UNITY_BEGIN();
+
+    run_all_tests_TrackData();
+
+    return UNITY_END();
 }

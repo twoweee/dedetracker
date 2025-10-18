@@ -2,8 +2,10 @@
 *.exe
 *.pdb
 
-# Code samples previously used for testing 
+# Code samples previously used for testing/other sample and template stuff 
 example*.c
+tTemplTest.c
+
 
 
 # Editors
