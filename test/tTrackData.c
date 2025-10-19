@@ -96,10 +96,11 @@ void test_addTickToTrack_fill_plus(void){
     targetFirstRow.data = targetTickData;
     targetFirstRow.flag = 0x10;
     targetFirstRow.byte8 = 0x00;
-    addTickToTrack(&track1, targetTime, &targetTickData, 0x10);
+    int status = addTickToTrack(&track1, targetTime, &targetTickData, 0x10);
 
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(MAX_TICKS_PER_TRACK, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(1, status);
 };
 
 void test_addTickToTrack_half_full(void){
@@ -136,10 +137,11 @@ void test_addTickToTrack_middle_insert(void){
     targetFirstRow.flag = 0x10;
     targetFirstRow.byte8 = 0x00;
     memcpy(target+((middle+1)*TICK_LENGTH_M), &targetFirstRow, TICK_LENGTH_M);
-    addTickToTrack(&track1, targetTime, &targetTickData, 0x10);
+    int status = addTickToTrack(&track1, targetTime, &targetTickData, 0x10);
 
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(MAX_TICKS_PER_TRACK, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(0, status);
 };
 
 void test_remTickFromTrack(void){
@@ -148,13 +150,14 @@ void test_remTickFromTrack(void){
 
     int threequarters = 3*(MAX_TICKS_PER_TRACK/4);
     helperFillTrackToPoint(target, &track1, threequarters);
-    remTickFromTrack(&track1, 0x1111); // as per fill helper function, 0x1111 is second tick
+    int status = remTickFromTrack(&track1, 0x1111); // as per fill helper function, 0x1111 is second tick
 
     memmove(target+(1*TICK_LENGTH_M), target+(2*TICK_LENGTH_M), (threequarters-2)*TICK_LENGTH_M);
     memcpy(target+((threequarters-2)*TICK_LENGTH_M), target+((threequarters-1)*TICK_LENGTH_M), 1*TICK_LENGTH_M);
     
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(threequarters-1, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(0, status);
 };
 
 void test_changeTickInTrack(void){
@@ -167,11 +170,11 @@ void test_changeTickInTrack(void){
     memset(&targetTickData, 0x11, sizeof(union TickData));
     memset(target+(1*TICK_LENGTH_M)+2, 0x11, 5);
 
-    changeTickInTrack(&track1, 0x1111, &targetTickData, 0x11);
-
+    int status = changeTickInTrack(&track1, 0x1111, &targetTickData, 0x11);
 
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(threequarters, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(0, status);
 };
 
 void test_moveTickInTrack(void){
@@ -193,36 +196,40 @@ void test_moveTickInTrack(void){
 
     memcpy(target+((MAX_TICKS_PER_TRACK-3)*TICK_LENGTH_M), &targetTime, 2);
 
-    moveTickInTrack(&track1, 0x1111, targetTime);
+    int status = moveTickInTrack(&track1, 0x1111, targetTime);
 
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(MAX_TICKS_PER_TRACK-1, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(0, status);
 };
 
 void test_remMovChngNonExistentTick(void){
     uint8_t target[MAX_TICKS_PER_TRACK*TICK_LENGTH_M] = {0x00};
     struct TrackData track1 = createTrack(NAME, LENGTH);
+    int status = -1;
 
     int threequarters = 3*(MAX_TICKS_PER_TRACK/4);
     helperFillTrackToPoint(target, &track1, threequarters);
-    remTickFromTrack(&track1, 0xFFFF);
+    status = remTickFromTrack(&track1, 0xFFFF);
 
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(threequarters, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(1, status);
 
     union TickData targetTickData;
     memset(&targetTickData, 0x11, sizeof(union TickData));
 
-    changeTickInTrack(&track1, 0xFFFF, &targetTickData, 0x11);
-
-
-    TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
-    TEST_ASSERT_EQUAL_INT(threequarters, track1.ticksUsed);
-
-    moveTickInTrack(&track1, 0xFFFF, 0xFFF1);
+    status = changeTickInTrack(&track1, 0xFFFF, &targetTickData, 0x11);
 
     TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
     TEST_ASSERT_EQUAL_INT(threequarters, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(1, status);
+
+    status = moveTickInTrack(&track1, 0xFFFF, 0xFFF1);
+
+    TEST_ASSERT_EQUAL_MEMORY(target, track1.ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH_M); 
+    TEST_ASSERT_EQUAL_INT(threequarters, track1.ticksUsed);
+    TEST_ASSERT_EQUAL_INT(1, status);
 };
 
 void run_all_tests_TrackData(void){
