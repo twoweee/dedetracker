@@ -193,6 +193,7 @@ uint8_t trackMemCleanup(struct TrackData* track){
 uint8_t printTrack(struct TrackData* track){
     printf("name: %04X, ticksUsed: %d, length: %d, heapInstance: %p", 
         track->name, track->ticksUsed, track->length, track->heapInstance);
+    printf("\n\t  tick \t   |data\t       |flag|byte");
     printMemSpace(track->ticks, MAX_TICKS_PER_TRACK*TICK_LENGTH, TICK_LENGTH);
     return 0;
 };

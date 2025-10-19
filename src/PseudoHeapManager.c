@@ -62,7 +62,7 @@ struct PseudoHeapInstance initializePseudoHeap(void* startingAddr, int lengthInB
     newHeap.memSpace = startingAddr;
     newHeap.length = lengthInBytes;
 
-    memset(startingAddr, '\0', lengthInBytes);
+    memset(startingAddr, '0x00', lengthInBytes);
     return newHeap;
 }
 

@@ -14,7 +14,8 @@ To do soon:
 - ~~create a test directory and test scripts,~~
 - PseudoHeap needs reworking,
 - figure out (and document) remaining design,
-- TrackData.c is tested, ~~but PseudoHeapManager just kinda,and certainly not together for those hypothetical long MIDI messages~~.
+- introduce header files and split mem printing out of PseudoHeapManager - its not needed in release,
+- ~~TrackData.c is tested, but PseudoHeapManager just kinda,and certainly not together for those hypothetical long MIDI messages~~.
 
 # Parts list
 | File | Description | Status |
