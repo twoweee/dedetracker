@@ -62,7 +62,7 @@ struct PseudoHeapInstance initializePseudoHeap(void* startingAddr, int lengthInB
     newHeap.memSpace = startingAddr;
     newHeap.length = lengthInBytes;
 
-    memset(startingAddr, '0x00', lengthInBytes);
+    memset(startingAddr, 0x00, lengthInBytes);
     return newHeap;
 }
 
@@ -70,8 +70,9 @@ struct PseudoHeapInstance initializePseudoHeap(void* startingAddr, int lengthInB
 inline int justAllocate(struct PseudoHeapInstance* heapInstance, int* confirmedFreeBytes, int* currentOffset, int* neededLengthInBytes, 
     void** newAllocatedSpace){
     heapInstance->lastUsedByte = *currentOffset;
-    //memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), '\x01', *neededLengthInBytes);
-    memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), *currentOffset, *neededLengthInBytes);
+    memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), 0xFF, *neededLengthInBytes);
+    
+    // memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), *currentOffset, *neededLengthInBytes);
     *newAllocatedSpace = (void*)((uint8_t*)(heapInstance->memSpace))[*currentOffset];
     return 0;
 };

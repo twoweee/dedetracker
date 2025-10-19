@@ -12,9 +12,9 @@ To do soon:
 - ~~structure better,~~
 - ~~write better commetns in PseudoHeapManager and a better readme,~~
 - ~~create a test directory and test scripts,~~
-- PseudoHeap needs reworking,
+- ~~PseudoHeap needs reworking,~~ for now PseudoHeap is fine for now, but 0x00 is treated as empty,
 - figure out (and document) remaining design,
-- introduce header files and split mem printing out of PseudoHeapManager - its not needed in release,
+- introduce header files and CMake and split mem printing out of PseudoHeapManager - its not needed in release,
 - ~~TrackData.c is tested, but PseudoHeapManager just kinda,and certainly not together for those hypothetical long MIDI messages~~.
 
 # Parts list
