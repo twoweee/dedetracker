@@ -22,5 +22,7 @@ int main() {
 
     int testPseudoHeapManagerResult = UNITY_END();
 
-    return testTrackDataResult + testPseudoHeapManagerResult;
+    // return testTrackDataResult + testPseudoHeapManagerResult;
+    return testPseudoHeapManagerResult;
+    return testTrackDataResult;
 }

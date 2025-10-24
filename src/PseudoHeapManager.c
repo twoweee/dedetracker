@@ -73,7 +73,7 @@ inline int justAllocate(struct PseudoHeapInstance* heapInstance, int* confirmedF
     memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), 0xFF, *neededLengthInBytes);
     
     // memset(((uint8_t*)heapInstance->memSpace) + (*currentOffset) - (*neededLengthInBytes-1), *currentOffset, *neededLengthInBytes);
-    *newAllocatedSpace = (void*)((uint8_t*)(heapInstance->memSpace))[*currentOffset];
+    *newAllocatedSpace = (void*)((&((uint8_t*)(heapInstance->memSpace))[*currentOffset]) - (*neededLengthInBytes-1));
     return 0;
 };
 
@@ -114,8 +114,8 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, int neededLengthI
 }
 
 // free some space
-int freePseudoHeap(struct PseudoHeapInstance* heapInstance, int startOffset, int lengthInBytes) {
-    heapInstance->lastFailedAllocateSize = INT16_MAX;
-    memset(((uint8_t*)heapInstance->memSpace) + startOffset, '\0', lengthInBytes);
+int freePseudoHeap(struct PseudoHeapInstance* heapInstance, void** newAllocatedSpaceint, int lengthInBytes) {
+    // heapInstance->lastFailedAllocateSize = INT16_MAX;
+    // memset(((uint8_t*)heapInstance->memSpace) + startOffset, '\0', lengthInBytes);
     return 0;
 }

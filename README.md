@@ -1,29 +1,15 @@
 # To run:
-Just compile and run main.c.
+So far only tests are meningful, compile and run test/test.c.
 
 # Situation as of now
 Work in progress, building out files one by one.
 
-Everything is work in progress, even the structure and readme.
-
 Currently working in the **main** branch solely because there is no *working* version, so there isn't really much to break as I'm building things out. Once there is an actual version I will add at least a dev branch. 
 
 To do soon:
-- ~~structure better,~~
-- ~~write better commetns in PseudoHeapManager and a better readme,~~
-- ~~create a test directory and test scripts,~~
-- ~~PseudoHeap needs reworking,~~ for now PseudoHeap is fine for now, but 0x00 is treated as empty,
-- figure out (and document) remaining design,
-- introduce header files and CMake and split mem printing out of PseudoHeapManager - its not needed in release,
-- ~~TrackData.c is tested, but PseudoHeapManager just kinda,and certainly not together for those hypothetical long MIDI messages~~.
-
-# Parts list
-| File | Description | Status |
-| ----------- | ----------- | ----------- |
-| [TrackData.c](#trackdata) | track note and tick data structure with tick array, provides adding, removing, changing | Done for now |
-| [PseudoHeapManager.c](#PseudoHeapManager) | provides pseudo heap functionality in allocated stack space, intended for long MIDI messages | Done for now |
-| the rest | work in progress | work in progress |
-
+- rework PseudoHeap - length isn't tracked, 0x00 is seen as empty, a more robust solution needed,
+- introduce Header files,
+- introduce a proper CMake usage. 
 
 # Design
 ## Design on larger scale
