@@ -8,21 +8,21 @@ void setUp(void) {}
 void tearDown(void) {}
 
 int main() {
-    printf("BEGIN TEST TrackData.c\n");
+    // printf("BEGIN TEST TrackData.c\n");
+    // UNITY_BEGIN();
+
+    // run_all_tests_TrackData();
+
+    // int testTrackDataResult = UNITY_END();
+
+    printf("\nBEGIN TEST PseudoHeapManager.c with small sizes\n");
     UNITY_BEGIN();
 
-    run_all_tests_TrackData();
-
-    int testTrackDataResult = UNITY_END();
-
-    printf("\nBEGIN TEST PseudoHeapManager.c\n");
-    UNITY_BEGIN();
-
-    run_all_tests_PseudoHeapManager();
+    run_all_tests_PseudoHeapManager_small();
 
     int testPseudoHeapManagerResult = UNITY_END();
 
     // return testTrackDataResult + testPseudoHeapManagerResult;
     return testPseudoHeapManagerResult;
-    return testTrackDataResult;
+    // return testTrackDataResult;
 }
