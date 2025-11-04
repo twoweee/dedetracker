@@ -7,7 +7,7 @@ Work in progress, building out files one by one.
 Currently working in the **main** branch solely because there is no *working* version, so there isn't really much to break as I'm building things out. Once there is an actual version I will add at least a dev branch. 
 
 To do soon:
-- rework PseudoHeap - length isn't tracked, 0x00 is seen as empty, a more robust solution needed,
+- rework PseudoHeap - length isn't tracked, 0x00 is seen as empty, a more robust solution needed, 1. rewrite tests with static expectations AND memory comparisons per full array, 2. rework allocation, 
 - introduce Header files,
 - introduce a proper CMake usage. 
 

@@ -56,7 +56,7 @@ void helperFillTrackToPoint(struct Tick* targetTicksMemory, struct TrackData* te
     uint8_t targetByte8 = 0x00; // this is the unused byte in the struct
 
     TICK_T targetTime;
-    union TickData targetTickData;
+    TICK_DATA targetTickData;
     struct Tick targetFirstRow;
     
     for (uint32_t currentTick = 0; currentTick<MAX_TICKS_PER_TRACK && currentTick<tickCount; currentTick++){
@@ -64,7 +64,8 @@ void helperFillTrackToPoint(struct Tick* targetTicksMemory, struct TrackData* te
         memset(&targetTickData, dataByte, TICK_DATA_SIZE); // set new target data
         
         targetFirstRow.time = targetTime;
-        targetFirstRow.data = targetTickData;
+        // targetFirstRow.data = targetTickData;
+        memcpy(&targetFirstRow.data, &targetTickData, DATA_LENGTH);
         targetFirstRow.flag = targetFlag;
         targetFirstRow.byte8 = targetByte8;
         
@@ -114,12 +115,13 @@ void test_addTickToTrack_fill_plus(void){
 
     // make a new tick, try adding it
     TICK_T targetTime = 0x1234;
-    union TickData targetTickData;
+    TICK_DATA targetTickData;
     memset(&targetTickData, 0x10, TICK_DATA_SIZE); // make new target data
 
     struct Tick targetFirstRow;
     targetFirstRow.time = targetTime;
-    targetFirstRow.data = targetTickData;
+    // targetFirstRow.data = targetTickData;
+    memcpy(&targetFirstRow.data, &targetTickData, DATA_LENGTH);
     targetFirstRow.flag = 0x10;
     targetFirstRow.byte8 = 0x00;
 
@@ -167,12 +169,13 @@ void test_addTickToTrack_middle_insert(void){
     memcpy(&targetTime, &targetTicksMemory[middleOfTrack+1], 2); // get target time from middle tick
     targetTime++;
 
-    union TickData targetTickData;
+    TICK_DATA targetTickData;
     memset(&targetTickData, 0x10, TICK_DATA_SIZE); // set new tick data
 
     struct Tick targetFirstRow;
     targetFirstRow.time = targetTime;
-    targetFirstRow.data = targetTickData;
+    // targetFirstRow.data = targetTickData;
+    memcpy(&targetFirstRow.data, &targetTickData, DATA_LENGTH);
     targetFirstRow.flag = 0x10;
     targetFirstRow.byte8 = 0x00;
 
@@ -228,7 +231,7 @@ void test_changeTickInTrack(void){
     const uint8_t testNewDataByte = 0xDA;
     const uint8_t testNewFlagByte = 0xFA;
 
-    union TickData targetTickData;
+    TICK_DATA targetTickData;
     memset(&targetTickData, testNewDataByte, TICK_DATA_SIZE);  // prepare new tick data for track
     memset(&((uint8_t*)targetTicksMemory)[(TICK_LENGTH*1)+TICK_TIME_SIZE], testNewDataByte, 4); // change tick data in target
     memset(&((uint8_t*)targetTicksMemory)[(TICK_LENGTH*1)+TICK_TIME_SIZE+TICK_DATA_SIZE], testNewFlagByte, 1); // change tick flag in target
@@ -286,7 +289,7 @@ void test_remMovChngNonExistentTick(void){
     TEST_ASSERT_EQUAL_INT(threeQuartersFull, testTrack.ticksUsed);
     TEST_ASSERT_EQUAL_INT(FAIL_STATUS, status);
 
-    union TickData newTickData;
+    TICK_DATA newTickData;
     memset(&newTickData, 0x11, TICK_DATA_SIZE); // create new tick data
 
     status = changeTickInTrack(&testTrack, 0xFFFF, &newTickData, 0x11);
@@ -340,12 +343,13 @@ void test_addTickToTrack_add_remove_add(void){
     memcpy(&targetTime, &targetTicksMemory[nowDeletedLastTick], 2); // set new target tick time
     targetTime++;
 
-    union TickData targetTickData;
+    TICK_DATA targetTickData;
     memset(&targetTickData, 0x10, TICK_DATA_SIZE); // set new tick data
 
     struct Tick targetFirstRow;
     targetFirstRow.time = targetTime;
-    targetFirstRow.data = targetTickData;
+    // targetFirstRow.data = targetTickData;
+    memcpy(&targetFirstRow.data, &targetTickData, DATA_LENGTH);
     targetFirstRow.flag = 0x10;
     targetFirstRow.byte8 = 0x00;
 

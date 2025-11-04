@@ -4,7 +4,8 @@
 #include "PseudoHeapManager.c"
 
 #define TICK_T uint16_t // time
-#define POINTER_T uint8_t // pointer to an address that is kept
+#define DATA_LENGTH 4 // data and pointer length
+#define TICK_DATA uint32_t // should fit DATA_LENGTH bytes
 #define MEM_LENGTH_T uint8_t  // length of data at the pointer
 #define MAX_TICKS_PER_TRACK 16383 // maximum ticks count per track
 #define TICK_COUNT_T uint32_t // count taken up slots inside the array, should fit MAX_TICKS_PER_TRACK
@@ -17,24 +18,22 @@
 // #define MAX_TICKS_PER_TRACK 20 // maximum ticks count per track
 // #define TRACK_TICKS_LENGTH (TICK_LENGTH * MAX_TICKS_PER_TRACK)
 
-struct TickData_Pointer {
-    // POINTER_T address; // POINTER_T is uint16_t
-    POINTER_T address[3];
-    MEM_LENGTH_T length;
-    // uint8_t byte4; // unused byte
-};
+// struct TickData_Pointer {
+//     // POINTER_T address; // POINTER_T is uint16_t
+//     // POINTER_T address[4];
+//     uint32_t length;
+//     // uint8_t byte4; // unused byte
+// };
 
-const uint8_t DATA_LENGTH = sizeof(struct TickData_Pointer);
-
-union TickData {
-    struct TickData_Pointer pointer;
-    uint8_t bytes[sizeof(struct TickData_Pointer)];
-};
+// TICK_DATA { // redundant pointer for now
+//     uint8_t pointer[DATA_LENGTH];
+//     uint8_t bytes[DATA_LENGTH];
+// };
 
 // 2 bytes time, 4 bytes address + len / data, 1 byte flag, 1 byte byte8 unused byte
 struct Tick {
     TICK_T time;
-    union TickData data;
+    uint8_t data[DATA_LENGTH];
     uint8_t flag;
     uint8_t byte8; // unused byte
 };
@@ -79,18 +78,18 @@ inline uint8_t findTickExactPos(struct TrackData* trackDeleteFrom, TICK_T remove
 
 // lowest level of writing the tick to 
 inline uint8_t justAddTick(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T desiredPosition, 
-    union TickData* bytes, uint8_t flag){
+    TICK_DATA* bytes, uint8_t flag){
     trackToAddTo->ticksUsed++;
     trackToAddTo->ticks[desiredPosition].time = newTime;
     trackToAddTo->ticks[desiredPosition].flag = flag;
     // trackToAddTo->ticks[desiredPosition].byte8;
-    memcpy(trackToAddTo->ticks[desiredPosition].data.bytes, bytes, DATA_LENGTH);
+    memcpy(trackToAddTo->ticks[desiredPosition].data, bytes, DATA_LENGTH);
     return 0;
 };
 
 // reusable add helper
 inline uint8_t addTickToTrackByPos(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T desiredPosition,
-    union TickData* bytes, uint8_t flag){
+    TICK_DATA* bytes, uint8_t flag){
     TICK_COUNT_T movableTicksCount = trackToAddTo->ticksUsed - desiredPosition;
     // copy over the rest of the items
     if (movableTicksCount){ // if movableTicksCount is more than 0
@@ -114,7 +113,7 @@ inline uint8_t remTickFromTrackByPos(struct TrackData* trackDeleteFrom, TICK_COU
 
 // add tick
 uint8_t addTickToTrack(struct TrackData* trackToAddTo, TICK_T newTime,
-    union TickData* bytes, uint8_t flag){
+    TICK_DATA* bytes, uint8_t flag){
     switch (trackToAddTo->ticksUsed) {
         case 0: // empty 
             justAddTick(trackToAddTo, newTime, 0, bytes, flag);
@@ -145,11 +144,11 @@ uint8_t remTickFromTrack(struct TrackData* trackDeleteFrom, TICK_T removeTime){
 
 // change tick value but not time
 uint8_t changeTickInTrack(struct TrackData* trackToEdit, TICK_T changeTime,
-    union TickData* bytes, uint8_t flag) { 
+    TICK_DATA* bytes, uint8_t flag) { 
     if (trackToEdit->ticksUsed) {
         TICK_COUNT_T desiredPosition = 0;
         if (findTickExactPos(trackToEdit, changeTime, &desiredPosition)) return 1;
-        memcpy(trackToEdit->ticks[desiredPosition].data.bytes, bytes, DATA_LENGTH);
+        memcpy(trackToEdit->ticks[desiredPosition].data, bytes, DATA_LENGTH);
         trackToEdit->ticks[desiredPosition].flag = flag;
     } else {
         return 1; // track is empty
@@ -162,7 +161,7 @@ uint8_t moveTickInTrack(struct TrackData* trackToEdit, TICK_T oldTime, TICK_T ne
     if (trackToEdit->ticksUsed) {
         TICK_COUNT_T desiredPosition = 0;
         if (findTickExactPos(trackToEdit, oldTime, &desiredPosition)) return 1;
-        union TickData tmpTickData;
+        TICK_DATA tmpTickData;
         uint8_t flag = trackToEdit->ticks[desiredPosition].flag;
         memcpy(&tmpTickData, &trackToEdit->ticks[desiredPosition].data, DATA_LENGTH);
         remTickFromTrackByPos(trackToEdit, desiredPosition);
