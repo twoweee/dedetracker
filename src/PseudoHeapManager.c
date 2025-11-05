@@ -14,11 +14,6 @@ struct PseudoHeapInstance initializePseudoHeap(void* heapStartingAddress, BYTE_C
     return newHeap; 
 }
 
-// int writeToPseudoHeapAddress(void* allocatedMemoryAddress, void* sourceMemoryAddress, int sourceLength){
-//     memcpy((uint8_t*)allocatedMemoryAddress+1, sourceMemoryAddress, sourceLength);
-//     return 0;
-// }
-
 inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* confirmedBlocks, BYTE_COUNT_T* currentOffset, 
     BLOCK_SIZE_T neededBlocks, BLOCK_SIZE_T neededBytes, 
     BYTE_COUNT_T* newAllocatedSpace){
@@ -64,7 +59,7 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T need
     BLOCK_SIZE_T confirmedBlocks = 0;
     const BLOCK_SIZE_T neededBytes = neededBytesData + 1; // +1 cuz byte for length byte
     const BLOCK_SIZE_T neededBlocks = ((neededBytes - 1) / heapInstance->blockSize) + 1; // +1 cuz division rounds down otherwise
-    const BYTE_COUNT_T firstByteToLookAt = heapInstance->lastUsedBlock * heapInstance->blockSize; // byte right outside the last used block
+    const BYTE_COUNT_T firstByteToLookAt = (heapInstance->lastUsedBlock * heapInstance->blockSize) + 1; // byte right outside the last used block
 
     if (neededBlocks>heapInstance->freeBlocks) return 1;
 
