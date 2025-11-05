@@ -6,11 +6,9 @@
 #define TICK_T uint16_t // time
 #define DATA_LENGTH 4 // data and pointer length
 #define TICK_DATA uint32_t // should fit DATA_LENGTH bytes
-#define MEM_LENGTH_T uint8_t  // length of data at the pointer
 #define MAX_TICKS_PER_TRACK 16383 // maximum ticks count per track
 #define TICK_COUNT_T uint32_t // count taken up slots inside the array, should fit MAX_TICKS_PER_TRACK
 #define TRACK_LENGTH_T uint32_t // track length in 1/TICK_PER_MS ms
-#define TICK_PER_MS 100
 #define NAME_T uint32_t // type for name
 
 // #define DATA_LENGTH (sizeof(POINTER_T) + sizeof(MEM_LENGTH_T)) // length of data section
