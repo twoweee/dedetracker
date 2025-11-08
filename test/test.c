@@ -1,5 +1,6 @@
 #include "../test/tTrackData.c"
-#include "../test/tPseudoHeapManager.c"
+#include "../test/tPseudoHeapManagerSmall.c"
+#include "../test/tPseudoHeapManagerLong.c"
 #include "../third-party/test/unity/src/unity.c"
 
 
@@ -15,14 +16,19 @@ int main() {
 
     int testTrackDataResult = UNITY_END();
 
-    printf("\nBEGIN TEST PseudoHeapManager.c\n");
+    printf("\nBEGIN TEST PseudoHeapManagerShort.c\n");
     UNITY_BEGIN();
 
-    // run_all_tests_PseudoHeapManager_small();
+    run_all_tests_PseudoHeapManagerShort();
 
-    int testPseudoHeapManagerResult = UNITY_END();
+    int testPseudoHeapManagerShortResult = UNITY_END();
 
-    // return testTrackDataResult + testPseudoHeapManagerResult;
-    // return testPseudoHeapManagerResult;
-    return testTrackDataResult;
+    printf("\nBEGIN TEST PseudoHeapManagerLong.c\n");
+    UNITY_BEGIN();
+
+    run_all_tests_PseudoHeapManagerLong();
+
+    int testPseudoHeapManagerLongResult = UNITY_END();
+
+    return testTrackDataResult + testPseudoHeapManagerShortResult + testPseudoHeapManagerLongResult;
 }

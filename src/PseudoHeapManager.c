@@ -4,14 +4,24 @@
 #include <stdint.h>
 #include "PseudoHeapPrint.c"
 
+#define DEBUG_PRINT 0
+
 struct PseudoHeapInstance initializePseudoHeap(void* heapStartingAddress, BYTE_COUNT_T lengthInBlocks, BLOCK_SIZE_T blockSize){
     struct PseudoHeapInstance newHeap = {.length = lengthInBlocks*blockSize, .blockSize = blockSize};
     newHeap.memSpace = heapStartingAddress;
     newHeap.freeBlocks = lengthInBlocks;
-    newHeap.lastUsedBlock = -1;
+    newHeap.lastUsedBlock = UINT32_MAX;
 
     memset(heapStartingAddress, 0x00, lengthInBlocks*blockSize);
     return newHeap; 
+}
+
+int writeToPseudoHeapAddress(struct PseudoHeapInstance* heapInstancevoid, BYTE_COUNT_T* allocatedSpace, void* sourceMemoryAddress){
+    const BYTE_COUNT_T targetLength = ((uint8_t*)heapInstancevoid->memSpace)[*allocatedSpace] - 1;
+    const BYTE_COUNT_T targetDataAddress = *allocatedSpace + 1;
+    void* heapAddress = &(((uint8_t*)heapInstancevoid->memSpace)[targetDataAddress]);
+    memcpy(heapAddress, sourceMemoryAddress, targetLength);
+    return 0;
 }
 
 inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* confirmedBlocks, BYTE_COUNT_T* currentOffset, 
@@ -22,7 +32,7 @@ inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* c
     const BYTE_COUNT_T startingByte = startingBlock * heapInstance->blockSize;
     heapInstance->lastUsedBlock = currentBlock;
 
-    // printf("currentOffset %d currentBlock %d startingBlock %d startingByte %d currentBlock %d\n\n", *currentOffset, currentBlock, startingBlock, startingByte, currentBlock);
+    if (DEBUG_PRINT) printf("currentOffset %d currentBlock %d startingBlock %d startingByte %d currentBlock %d\n\n", *currentOffset, currentBlock, startingBlock, startingByte, currentBlock);
     
     ((uint8_t*)heapInstance->memSpace)[startingByte] = neededBytes;
 
@@ -43,7 +53,7 @@ inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_
             const BYTE_COUNT_T dataBytesHere = ((uint8_t*)(heapInstance->memSpace))[*currentOffset];
             const BYTE_COUNT_T jumpBlocks = ((dataBytesHere - 1) / heapInstance->blockSize) + 1;
 
-            // printf("dataBytesHere %d jumpBlocks %d \n", dataBytesHere, jumpBlocks);
+            if (DEBUG_PRINT) printf("dataBytesHere %d jumpBlocks %d \n", dataBytesHere, jumpBlocks);
 
             *currentOffset += (jumpBlocks * heapInstance->blockSize);
             if (*currentOffset >= heapInstance->length) return 1; // reached last block
@@ -52,7 +62,7 @@ inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_
     
     (*confirmedBlocks)++;
 
-    // printf("currentOffset %d confirmedBlocks %d neededBlocks %d \n", *currentOffset, *confirmedBlocks, neededBlocks);
+    if (DEBUG_PRINT) printf("currentOffset %d confirmedBlocks %d neededBlocks %d \n", *currentOffset, *confirmedBlocks, neededBlocks);
     
     if (*confirmedBlocks >= neededBlocks) {
         return justAllocate(heapInstance, confirmedBlocks, currentOffset, neededBlocks, neededBytes, newAllocatedSpace);
@@ -65,9 +75,10 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T need
     BLOCK_SIZE_T confirmedBlocks = 0;
     const BLOCK_SIZE_T neededBytes = neededBytesData + 1; // +1 cuz byte for length byte
     const BLOCK_SIZE_T neededBlocks = ((neededBytes - 1) / heapInstance->blockSize) + 1; // +1 cuz division rounds down otherwise
-    const BYTE_COUNT_T firstByteToLookAt = (heapInstance->lastUsedBlock + 1) * heapInstance->blockSize; // byte right outside the last used block
+    BYTE_COUNT_T firstByteToLookAt = (heapInstance->lastUsedBlock + 1) * heapInstance->blockSize; // byte right outside the last used block
+    if (firstByteToLookAt >= heapInstance->length) firstByteToLookAt = 0;
     
-    // printf("neededBytes %d neededBlocks %d firstByteToLookAt %d\n", neededBytes, neededBlocks, firstByteToLookAt);
+    if (DEBUG_PRINT) printf("neededBytes %d neededBlocks %d firstByteToLookAt %d\n", neededBytes, neededBlocks, firstByteToLookAt);
     
     if (neededBlocks > heapInstance->freeBlocks) return 1;
 
@@ -93,12 +104,15 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T need
 // free some space
 int freePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T* allocatedSpace) {
     const BLOCK_SIZE_T actualLength = ((uint8_t*)heapInstance->memSpace)[*allocatedSpace];
-    // printf("len %d\n", actualLength);
     const BLOCK_SIZE_T lengthRoundedBlocks = (((actualLength - 1) / heapInstance->blockSize) + 1);
-    // printf("lenbl %d\n", lengthRoundedBlocks);
     const BLOCK_SIZE_T lengthRoundedBytes = lengthRoundedBlocks * heapInstance->blockSize;
-    // printf("lenby %d\n", lengthRoundedBytes);
+
+    if (DEBUG_PRINT) printf("len %d\n", actualLength);
+    if (DEBUG_PRINT) printf("lenbl %d\n", lengthRoundedBlocks);
+    if (DEBUG_PRINT) printf("lenby %d\n", lengthRoundedBytes);
+
     memset(&(((uint8_t*)heapInstance->memSpace)[*allocatedSpace]), 0x00, lengthRoundedBytes);
+    *allocatedSpace = UINT32_MAX;
     heapInstance->freeBlocks+=lengthRoundedBlocks;
     return 0;
 }
