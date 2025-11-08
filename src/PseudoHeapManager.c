@@ -23,6 +23,7 @@ inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* c
     heapInstance->lastUsedBlock = currentBlock;
 
     // printf("currentOffset %d currentBlock %d startingBlock %d startingByte %d currentBlock %d\n\n", *currentOffset, currentBlock, startingBlock, startingByte, currentBlock);
+    
     ((uint8_t*)heapInstance->memSpace)[startingByte] = neededBytes;
 
     *newAllocatedSpace = startingByte;
@@ -41,6 +42,7 @@ inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_
         while (((uint8_t*)(heapInstance->memSpace))[*currentOffset] != 0x00){ // skip allocated blocks
             const BYTE_COUNT_T dataBytesHere = ((uint8_t*)(heapInstance->memSpace))[*currentOffset];
             const BYTE_COUNT_T jumpBlocks = ((dataBytesHere - 1) / heapInstance->blockSize) + 1;
+
             // printf("dataBytesHere %d jumpBlocks %d \n", dataBytesHere, jumpBlocks);
 
             *currentOffset += (jumpBlocks * heapInstance->blockSize);
@@ -49,7 +51,9 @@ inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_
     };
     
     (*confirmedBlocks)++;
+
     // printf("currentOffset %d confirmedBlocks %d neededBlocks %d \n", *currentOffset, *confirmedBlocks, neededBlocks);
+    
     if (*confirmedBlocks >= neededBlocks) {
         return justAllocate(heapInstance, confirmedBlocks, currentOffset, neededBlocks, neededBytes, newAllocatedSpace);
     }
@@ -62,7 +66,9 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T need
     const BLOCK_SIZE_T neededBytes = neededBytesData + 1; // +1 cuz byte for length byte
     const BLOCK_SIZE_T neededBlocks = ((neededBytes - 1) / heapInstance->blockSize) + 1; // +1 cuz division rounds down otherwise
     const BYTE_COUNT_T firstByteToLookAt = (heapInstance->lastUsedBlock + 1) * heapInstance->blockSize; // byte right outside the last used block
+    
     // printf("neededBytes %d neededBlocks %d firstByteToLookAt %d\n", neededBytes, neededBlocks, firstByteToLookAt);
+    
     if (neededBlocks > heapInstance->freeBlocks) return 1;
 
     // counting bytes but checking blocks
