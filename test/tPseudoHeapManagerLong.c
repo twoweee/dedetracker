@@ -11,6 +11,8 @@
 
 #define DEFAULT_LAST_USED_BYTE UINT32_MAX
 
+// THIS TEST WORKS BUT SUCKS, DONT BOTHER REALLY
+
 // yes we are using local vars... but its to make the whole thing much easier to use
 BYTE_COUNT_T allocatedAddressLong_A;
 const int sizeToAllocateLong_A = 19;
