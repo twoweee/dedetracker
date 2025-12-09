@@ -1,10 +1,8 @@
-#pragma once
-#include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "PseudoHeapStruct.c"
+#include "PseudoHeapManager.h"
 
-int inline helperPrintMemLine(int lineWidth, unsigned char *startAddr, int row, uint16_t *pbytes, int lastRowLen){
+static inline int helperPrintMemLine(int lineWidth, unsigned char *startAddr, int row, uint16_t *pbytes, int lastRowLen){
     printf("%04X %04X", row*lineWidth, pbytes[0]+row*lineWidth);
     for (int col = 0; col < lastRowLen; col++){
         printf("   %02X", startAddr[col+(row*lineWidth)]);

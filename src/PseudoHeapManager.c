@@ -1,8 +1,7 @@
-#pragma once
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "PseudoHeapPrint.c"
+#include "PseudoHeapManager.h"
 
 #define DEBUG_PRINT 0
 
@@ -24,7 +23,7 @@ int writeToPseudoHeapAddress(struct PseudoHeapInstance* heapInstancevoid, BYTE_C
     return 0;
 }
 
-inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* confirmedBlocks, BYTE_COUNT_T* currentOffset, 
+static inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* confirmedBlocks, BYTE_COUNT_T* currentOffset, 
     BLOCK_SIZE_T neededBlocks, BLOCK_SIZE_T neededBytes, 
     BYTE_COUNT_T* newAllocatedSpace){
     const BYTE_COUNT_T currentBlock = *currentOffset / heapInstance->blockSize;
@@ -44,7 +43,7 @@ inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* c
 // check if block starting with currentOffset byte is free
 // if yes - add to confirmedFreeBlocks, if confirmedFreeBlocks==neededLengthBlocks allocate
 // if no - set confirmedFreeBlocks to 0 and keep looking
-inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* confirmedBlocks, BYTE_COUNT_T* currentOffset, 
+static inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SIZE_T* confirmedBlocks, BYTE_COUNT_T* currentOffset, 
     BLOCK_SIZE_T neededBlocks, BLOCK_SIZE_T neededBytes, 
     BYTE_COUNT_T* newAllocatedSpace) {
     if (((uint8_t*)(heapInstance->memSpace))[*currentOffset] != 0x00) {

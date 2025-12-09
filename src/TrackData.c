@@ -1,72 +1,18 @@
-#pragma once
+#include <string.h>
 #include <stdint.h>
 #include <stdio.h>
-#include "PseudoHeapManager.c"
-
-#define TICK_T uint16_t // time
-#define DATA_LENGTH 4 // data and pointer length
-#define TICK_DATA uint32_t // should fit DATA_LENGTH bytes
-#define MAX_TICKS_PER_TRACK 16383 // maximum ticks count per track
-#define TICK_COUNT_T uint32_t // count taken up slots inside the array, should fit MAX_TICKS_PER_TRACK
-#define TRACK_LENGTH_T uint32_t // track length in 1/TICK_PER_MS ms
-#define NAME_T uint32_t // type for name
-
-// #define DATA_LENGTH (sizeof(POINTER_T) + sizeof(MEM_LENGTH_T)) // length of data section
-// #define TICK_LENGTH (sizeof(TICK_T) + DATA_LENGTH) 
-// #define MAX_TICKS_PER_TRACK 20 // maximum ticks count per track
-// #define TRACK_TICKS_LENGTH (TICK_LENGTH * MAX_TICKS_PER_TRACK)
-
-// struct TickData_Pointer {
-//     // POINTER_T address; // POINTER_T is uint16_t
-//     // POINTER_T address[4];
-//     uint32_t length;
-//     // uint8_t byte4; // unused byte
-// };
-
-// TICK_DATA { // redundant pointer for now
-//     uint8_t pointer[DATA_LENGTH];
-//     uint8_t bytes[DATA_LENGTH];
-// };
-
-// 2 bytes time, 4 bytes address + len / data, 1 byte flag, 1 byte byte8 unused byte
-struct Tick {
-    TICK_T time;
-    uint8_t data[DATA_LENGTH];
-    uint8_t flag;
-    uint8_t byte8; // unused byte
-};
-
-const uint8_t TICK_LENGTH = sizeof(struct Tick);
-const uint64_t TRACK_TICKS_LENGTH = sizeof(struct Tick) * MAX_TICKS_PER_TRACK;
-
-struct TrackData {
-    NAME_T name;
-    TICK_COUNT_T ticksUsed;
-    struct Tick ticks[MAX_TICKS_PER_TRACK];
-    uint32_t length;
-    struct PseudoHeapInstance* heapInstance;
-};
-
-// just return a new track struct with defaul values
-struct TrackData createTrack(NAME_T newName, TRACK_LENGTH_T newLength){
-    struct TrackData newTrack;
-    newTrack.name = newName;
-    newTrack.length = newLength;
-    newTrack.ticksUsed = 0;
-    memset(((uint8_t*)newTrack.ticks), '\0', TRACK_TICKS_LENGTH);
-    newTrack.heapInstance = NULL;
-    return newTrack;
-};
+#include "TrackData.h"
+#include "PseudoHeapManager.h"
 
 // find pos for adding
-inline uint8_t findTickBetweenPos(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T* desiredPosition){
+static inline uint8_t findTickBetweenPos(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T* desiredPosition){
     while (trackToAddTo->ticks[*desiredPosition].time < newTime // i should probably do binary search here too
         && *desiredPosition < trackToAddTo->ticksUsed) (*desiredPosition)++;
     return 0;
 };
 
 // find pos for removing
-inline uint8_t findTickExactPos(struct TrackData* trackDeleteFrom, TICK_T removeTime, TICK_COUNT_T* desiredPosition){
+static inline uint8_t findTickExactPos(struct TrackData* trackDeleteFrom, TICK_T removeTime, TICK_COUNT_T* desiredPosition){
     while (trackDeleteFrom->ticks[*desiredPosition].time != removeTime){ // binary search this
         (*desiredPosition)++;
         if (*desiredPosition >= trackDeleteFrom->ticksUsed) return 1; // didnt find
@@ -75,7 +21,7 @@ inline uint8_t findTickExactPos(struct TrackData* trackDeleteFrom, TICK_T remove
 };
 
 // lowest level of writing the tick to 
-inline uint8_t justAddTick(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T desiredPosition, 
+static inline uint8_t justAddTick(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T desiredPosition, 
     TICK_DATA* bytes, uint8_t flag){
     trackToAddTo->ticksUsed++;
     trackToAddTo->ticks[desiredPosition].time = newTime;
@@ -86,7 +32,7 @@ inline uint8_t justAddTick(struct TrackData* trackToAddTo, TICK_T newTime, TICK_
 };
 
 // reusable add helper
-inline uint8_t addTickToTrackByPos(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T desiredPosition,
+static inline uint8_t addTickToTrackByPos(struct TrackData* trackToAddTo, TICK_T newTime, TICK_COUNT_T desiredPosition,
     TICK_DATA* bytes, uint8_t flag){
     TICK_COUNT_T movableTicksCount = trackToAddTo->ticksUsed - desiredPosition;
     // copy over the rest of the items
@@ -99,7 +45,7 @@ inline uint8_t addTickToTrackByPos(struct TrackData* trackToAddTo, TICK_T newTim
 };
 
 // reusable remove helper
-inline uint8_t remTickFromTrackByPos(struct TrackData* trackDeleteFrom, TICK_COUNT_T pos){
+static inline uint8_t remTickFromTrackByPos(struct TrackData* trackDeleteFrom, TICK_COUNT_T pos){
     TICK_COUNT_T movableTicksCount = trackDeleteFrom->ticksUsed - (pos+1);
     if (movableTicksCount){ // if movableTicksCount is more than 0
         memmove(&(trackDeleteFrom->ticks[pos]), &(trackDeleteFrom->ticks[pos+1]), 
