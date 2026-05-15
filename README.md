@@ -1,4 +1,4 @@
-# major restructuring in process, this project is a mess 
+# major restructuring in process, this repo is a mess 
 # To run:
 So far only tests are meningful, compile and run test/test.c.
 
