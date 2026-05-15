@@ -1,6 +1,8 @@
 #ifndef TRACKDATA_H
 #define TRACKDATA_H
 
+#include <stdint.h>
+
 #define TICK_T uint16_t // time
 #define DATA_LENGTH 4 // data and pointer length
 #define TICK_DATA uint32_t // should fit DATA_LENGTH bytes
@@ -33,8 +35,8 @@ struct Tick {
     uint8_t byte8; // unused byte
 };
 
-const uint8_t TICK_LENGTH = sizeof(struct Tick);
-const uint64_t TRACK_TICKS_LENGTH = sizeof(struct Tick) * MAX_TICKS_PER_TRACK;
+static const uint8_t TICK_LENGTH = sizeof(struct Tick);
+static const uint64_t TRACK_TICKS_LENGTH = sizeof(struct Tick) * MAX_TICKS_PER_TRACK;
 
 struct TrackData {
     NAME_T name;

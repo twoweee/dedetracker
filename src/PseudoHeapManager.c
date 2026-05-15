@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "PseudoHeapManager.h"
 
-#define DEBUG_PRINT 0
+#define DEBUG_PRINT_PSH 0
 
 struct PseudoHeapInstance initializePseudoHeap(void* heapStartingAddress, BYTE_COUNT_T lengthInBlocks, BLOCK_SIZE_T blockSize){
     struct PseudoHeapInstance newHeap = {.length = lengthInBlocks*blockSize, .blockSize = blockSize};
@@ -31,7 +31,7 @@ static inline int justAllocate(struct PseudoHeapInstance* heapInstance, BLOCK_SI
     const BYTE_COUNT_T startingByte = startingBlock * heapInstance->blockSize;
     heapInstance->lastUsedBlock = currentBlock;
 
-    if (DEBUG_PRINT) printf("currentOffset %d currentBlock %d startingBlock %d startingByte %d currentBlock %d\n\n", *currentOffset, currentBlock, startingBlock, startingByte, currentBlock);
+    if (DEBUG_PRINT_PSH) printf("currentOffset %d currentBlock %d startingBlock %d startingByte %d currentBlock %d\n\n", *currentOffset, currentBlock, startingBlock, startingByte, currentBlock);
     
     ((uint8_t*)heapInstance->memSpace)[startingByte] = neededBytes;
 
@@ -52,7 +52,7 @@ static inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOC
             const BYTE_COUNT_T dataBytesHere = ((uint8_t*)(heapInstance->memSpace))[*currentOffset];
             const BYTE_COUNT_T jumpBlocks = ((dataBytesHere - 1) / heapInstance->blockSize) + 1;
 
-            if (DEBUG_PRINT) printf("dataBytesHere %d jumpBlocks %d \n", dataBytesHere, jumpBlocks);
+            if (DEBUG_PRINT_PSH) printf("dataBytesHere %d jumpBlocks %d \n", dataBytesHere, jumpBlocks);
 
             *currentOffset += (jumpBlocks * heapInstance->blockSize);
             if (*currentOffset >= heapInstance->length) return 1; // reached last block
@@ -61,7 +61,7 @@ static inline int checkAndAllocate(struct PseudoHeapInstance* heapInstance, BLOC
     
     (*confirmedBlocks)++;
 
-    if (DEBUG_PRINT) printf("currentOffset %d confirmedBlocks %d neededBlocks %d \n", *currentOffset, *confirmedBlocks, neededBlocks);
+    if (DEBUG_PRINT_PSH) printf("currentOffset %d confirmedBlocks %d neededBlocks %d \n", *currentOffset, *confirmedBlocks, neededBlocks);
     
     if (*confirmedBlocks >= neededBlocks) {
         return justAllocate(heapInstance, confirmedBlocks, currentOffset, neededBlocks, neededBytes, newAllocatedSpace);
@@ -77,7 +77,7 @@ int reservePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T need
     BYTE_COUNT_T firstByteToLookAt = (heapInstance->lastUsedBlock + 1) * heapInstance->blockSize; // byte right outside the last used block
     if (firstByteToLookAt >= heapInstance->length) firstByteToLookAt = 0;
     
-    if (DEBUG_PRINT) printf("neededBytes %d neededBlocks %d firstByteToLookAt %d\n", neededBytes, neededBlocks, firstByteToLookAt);
+    if (DEBUG_PRINT_PSH) printf("neededBytes %d neededBlocks %d firstByteToLookAt %d\n", neededBytes, neededBlocks, firstByteToLookAt);
     
     if (neededBlocks > heapInstance->freeBlocks) return 1;
 
@@ -106,9 +106,9 @@ int freePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T* alloca
     const BLOCK_SIZE_T lengthRoundedBlocks = (((actualLength - 1) / heapInstance->blockSize) + 1);
     const BLOCK_SIZE_T lengthRoundedBytes = lengthRoundedBlocks * heapInstance->blockSize;
 
-    if (DEBUG_PRINT) printf("len %d\n", actualLength);
-    if (DEBUG_PRINT) printf("lenbl %d\n", lengthRoundedBlocks);
-    if (DEBUG_PRINT) printf("lenby %d\n", lengthRoundedBytes);
+    if (DEBUG_PRINT_PSH) printf("len %d\n", actualLength);
+    if (DEBUG_PRINT_PSH) printf("lenbl %d\n", lengthRoundedBlocks);
+    if (DEBUG_PRINT_PSH) printf("lenby %d\n", lengthRoundedBytes);
 
     memset(&(((uint8_t*)heapInstance->memSpace)[*allocatedSpace]), 0x00, lengthRoundedBytes);
     *allocatedSpace = UINT32_MAX;
