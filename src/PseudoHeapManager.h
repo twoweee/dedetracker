@@ -1,5 +1,5 @@
-#ifndef PSEUDOHEAPMANAGER_H
-#define PSEUDOHEAPMANAGER_H
+#pragma once
+
 #define BYTE_COUNT_T uint32_t
 #define BLOCK_SIZE_T uint8_t
 
@@ -18,4 +18,3 @@ int freePseudoHeap(struct PseudoHeapInstance* heapInstance, BYTE_COUNT_T* alloca
 
 int printMemSpace(void* memSpace, int length, int lineWidth);
 int printPseudoHeapInstance(struct PseudoHeapInstance* heapInstance, int lineWidth);
-#endif //PSEUDOHEAPMANAGER_H

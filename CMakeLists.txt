@@ -1,9 +1,14 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.27)
+cmake_minimum_required(VERSION 3.27)
 
-PROJECT(dedetracker, C)
+project(dedetracker, C)
 
-include_directories(src)
+add_executable(main 
+    src/main.c
+    src/PseudoHeapManager.c
+    src/PseudoHeapPrint.c
+    src/TrackData.c
+)
 
-add_executable(dedetracker src/main.c)
-add_executable(test src/test.c)
-
+add_executable(test 
+    test/test.c
+)
