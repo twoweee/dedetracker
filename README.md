@@ -5,12 +5,17 @@ So far only tests are meningful, compile and run test/test.c.
 `-DMAX_TICKS_PER_TRACK` parameter to set max ticks per track
 
 # Situation as of now
+Tests and whatever I have in main works.
 Work in progress, building out files one by one.
 
-Currently working in the **main** branch solely because there is no *working* version, so there isn't really much to break as I'm building things out. Once there is an actual version I will add at least a dev branch. 
-
 To do soon:
-- rework PseudoHeap - length isn't tracked, 0x00 is seen as empty, a more robust solution needed.
+- rework PseudoHeap - length isn't tracked, 0x00 is seen as empty, a more robust solution needed,
+- use PseudoHeap with TrackData.
+
+To do next:
+- timer - need to be able to get precise time, must keep in mind I may want it to be portable to bare-metal,
+- sequencing - read MIDI messages from TrackData based on time, 
+- MIDI connection - OS features here should be fine as it's *really* easy to output the same bytes over serial output later.
 
 # Design
 ## Design on larger scale
