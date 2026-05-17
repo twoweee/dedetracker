@@ -11,6 +11,8 @@ int incr(uint8_t* num){
 
 int main() {
     struct TrackData track1 = createTrack(1, 16);
+    printTrack(&track1);
+
     TICK_DATA tickData1;
     uint8_t bytes1[4] = {0x20, 0x30, 0x40, 0x50};
     uint8_t bytes2[4] = {0x28, 0x38, 0x48, 0x58};

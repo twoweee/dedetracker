@@ -9,6 +9,6 @@ add_executable(main
     src/TrackData.c
 )
 
-add_executable(test 
-    test/test.c
-)
+#add_executable(test 
+#    test/test.c
+#)
