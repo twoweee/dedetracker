@@ -2,6 +2,7 @@
 So far only tests are meningful, compile and run test/test.c.
 `cmake -S . -B build `
 `cmake --build build `
+`-DMAX_TICKS_PER_TRACK` parameter to set max ticks per track
 
 # Situation as of now
 Work in progress, building out files one by one.
