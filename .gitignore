@@ -1,12 +1,14 @@
-# Bicrosoft Bindows
+# Microslop Bindows
 *.exe
 *.pdb
+
+*_exe
+notes.md
 
 # Code samples previously used for testing/other sample and template stuff 
 example*.c
 tTemplTest.c
 old_code/
-
 
 # Editors
 .vscode/

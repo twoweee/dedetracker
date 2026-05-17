@@ -1,5 +1,4 @@
 #include <string.h>
-#include <stdint.h>
 #include <stdio.h>
 #include "TrackData.h"
 #include "PseudoHeapManager.h"
@@ -53,6 +52,16 @@ static inline uint8_t remTickFromTrackByPos(struct TrackData* trackDeleteFrom, T
     }
     trackDeleteFrom->ticksUsed--;
     return 0;
+};
+
+struct TrackData createTrack(NAME_T newName, TRACK_LENGTH_T newLength){
+    struct TrackData newTrack;
+    newTrack.name = newName;
+    newTrack.length = newLength;
+    newTrack.ticksUsed = 0;
+    memset(((uint8_t*)newTrack.ticks), '\0', TRACK_TICKS_LENGTH);
+    newTrack.heapInstance = NULL;
+    return newTrack;
 };
 
 // add tick

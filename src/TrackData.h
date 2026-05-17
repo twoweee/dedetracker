@@ -1,10 +1,14 @@
-#ifndef TRACKDATA_H
-#define TRACKDATA_H
+#pragma once
+
+#include <stdint.h>
 
 #define TICK_T uint16_t // time
 #define DATA_LENGTH 4 // data and pointer length
 #define TICK_DATA uint32_t // should fit DATA_LENGTH bytes
-#define MAX_TICKS_PER_TRACK 16383 // maximum ticks count per track
+#ifndef MAX_TICKS_PER_TRACK
+// #define MAX_TICKS_PER_TRACK 16383 // maximum ticks count per track
+#define MAX_TICKS_PER_TRACK 16 // maximum ticks count per track
+#endif
 #define TICK_COUNT_T uint32_t // count taken up slots inside the array, should fit MAX_TICKS_PER_TRACK
 #define TRACK_LENGTH_T uint32_t // track length in 1/TICK_PER_MS ms
 #define NAME_T uint32_t // type for name
@@ -33,8 +37,8 @@ struct Tick {
     uint8_t byte8; // unused byte
 };
 
-const uint8_t TICK_LENGTH = sizeof(struct Tick);
-const uint64_t TRACK_TICKS_LENGTH = sizeof(struct Tick) * MAX_TICKS_PER_TRACK;
+static const uint8_t TICK_LENGTH = sizeof(struct Tick);
+static const uint64_t TRACK_TICKS_LENGTH = sizeof(struct Tick) * MAX_TICKS_PER_TRACK;
 
 struct TrackData {
     NAME_T name;
@@ -54,5 +58,3 @@ uint8_t moveTickInTrack(struct TrackData* trackToEdit, TICK_T oldTime, TICK_T ne
 uint8_t trackMemCleanup(struct TrackData* track);
 uint8_t printTrackNoHeader(void* memToPrint);
 uint8_t printTrack(struct TrackData* track);
-
-#endif //TRACKDATA_H

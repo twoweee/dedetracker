@@ -1,4 +1,5 @@
-#include "../src/TrackData.c"
+#include "../src/TrackData.h"
+#include "../src/PseudoHeapManager.h"
 #include "../third-party/test/unity/src/unity.h"
 #include <stdlib.h>
 

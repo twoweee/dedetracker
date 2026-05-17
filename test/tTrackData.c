@@ -1,6 +1,7 @@
-#include "../src/TrackData.c"
+#include "../src/TrackData.h"
 #include "../third-party/test/unity/src/unity.h"
 #include <stdlib.h>
+#include <string.h>
 
 #define TICK_LENGTH 8 // length of 1 tick, needs to be updated manually
 #define TICK_TIME_SIZE 2
